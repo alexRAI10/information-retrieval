@@ -1,5 +1,5 @@
 
-// Alain Delgado HW0
+// Code used as base for CSCE 45503
 // Simple program to read, write, and tokenize strings found in html files
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -79,4 +79,5 @@ public class tiny_tokenize {
         // System.out.println("\n -> Execution time: " + executionTime + "ms");
         }
     }
+
 
