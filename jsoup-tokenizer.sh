@@ -11,7 +11,7 @@ fi
 IN_DIR="$1"
 OUT_DIR="$2"
 
-#Error check in case no input directore was found
+# Error check in case no input directory was found
 if [[ ! -d "$IN_DIR" ]]; then
   echo "Error: Input_directory not found: $IN_DIR" >&2
   exit 1
@@ -19,8 +19,9 @@ fi
 
 mkdir -p "$OUT_DIR"
 
+# Compile, with JSoup jar
 echo "Compiling..."
-javac tiny_tokenize.java
+javac -cp jsoup-1.21.2.jar Tokenizer.java
 
 # Loop through .html files
 find "$IN_DIR" -type f -name '*.html' -print0 | while IFS= read -r -d '' FILE; do
@@ -28,7 +29,8 @@ find "$IN_DIR" -type f -name '*.html' -print0 | while IFS= read -r -d '' FILE; d
   BASENAME="$(basename "$FILE" .html)"
   OUTFILE="$OUT_DIR/$BASENAME.txt"
 
-  java tiny_tokenize "$FILE" "$OUTFILE"
+  # Run, with JSoup jar
+  java -cp .:jsoup-1.21.2.jar Tokenizer "$FILE" "$OUTFILE"
 
   echo ""
 done
