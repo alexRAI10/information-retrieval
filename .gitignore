@@ -1,4 +1,5 @@
-outputfiles/
+smalloutput/
+smallfiles/
 
 # Compiled class file
 *.class

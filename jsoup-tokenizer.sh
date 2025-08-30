@@ -23,6 +23,8 @@ mkdir -p "$OUT_DIR"
 echo "Compiling..."
 javac -cp jsoup-1.21.2.jar Tokenizer.java
 
+##### Generate the 3 required files: tokenized output directory, alpha.txt, and freqs.txt #####
+
 # Loop through .html files
 find "$IN_DIR" -type f -name '*.html' -print0 | while IFS= read -r -d '' FILE; do
   
@@ -34,5 +36,14 @@ find "$IN_DIR" -type f -name '*.html' -print0 | while IFS= read -r -d '' FILE; d
 
   echo ""
 done
+
+# Collect all tokens from output directory and store in text file
+cat "$OUT_DIR"/* > "$OUT_DIR"/all_tokens.txt
+
+# Sort alphabetically and generate alpha.txt
+sort "$OUT_DIR"/all_tokens.txt | uniq -c > "$OUT_DIR"/alpha.txt
+
+# Sort by frequency first and generate freqs.txt
+sort -k1,1nr -k2,2 "$OUT_DIR"/alpha.txt > "$OUT_DIR"/freqs.txt
 
 echo "Script done!"
