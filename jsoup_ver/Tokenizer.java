@@ -1,6 +1,8 @@
-
-// Code used as base for CSCE 45503
-// Simple program to read, write, and tokenize strings found in html files
+/*
+Authors: Alain Delgado, Micah McCollum
+Code used as base for CSCE 45503.
+Simple program to read, write, and tokenize strings found in html files using JSoup.
+*/
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

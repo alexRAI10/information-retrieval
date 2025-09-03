@@ -1,5 +1,7 @@
 smalloutput/
 smallfiles/
+typescript
+Lexer.java
 
 # Compiled class file
 *.class

@@ -1,5 +1,6 @@
-
 /* 
+Authors: Alain Delgado, Micah McCollum
+
  Simple program to read, write, and tokenize strings found in html files using Jflex
  To tokenize a single file compile and run:
     jflex lexer.jflex
@@ -58,7 +59,7 @@ public class Tokenizer {
                 System.out.println("Opened " + InFilename + " for reading");
                 System.out.println("Opened " + OutFilename + " for writing");
 
-                //Process the html text using lexer
+                //Process the html text using lexer from Jflex
                 Lexer lex = new Lexer(din);
                 String token;
                 while ((token = lex.yylex()) != null ) {
