@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.File;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.lang.String;
 
 public class Tokenizer {
     public static void main(String[] args) {
@@ -54,10 +57,24 @@ public class Tokenizer {
                 Document doc = Jsoup.parse(html, "UTF-8");
                 String textContent = doc.text();
 
-                // Split
-                String[] tokens = textContent.split("\\W+");
+                // Retain URLs after href attributes
+                Elements hrefLinks = doc.select("a[href]");
+
+                // Rewrite <a> text with appended href URL
+                for (Element link : hrefLinks) {
+                    link.text(link.text() + " " + link.attr("href"));
+                }
+                textContent = doc.text(); // Update text since <a> text has the href URL appended to be tokenized
+
+                // Split and tokenize by whitespace
+                String[] tokens = textContent.split("(?<!\\d)\\W+|\\W+(?!\\d)");
+
                 for (String token : tokens) {
                     if (!token.isEmpty()) {
+
+                        // Downcase tokens
+                        token = token.toLowerCase();
+
                         dout.write(token);
                         dout.newLine();
                     }

@@ -37,6 +37,9 @@ find "$IN_DIR" -type f -name '*.html' -print0 | while IFS= read -r -d '' FILE; d
   echo ""
 done
 
+### Before generating the remaining three files, delete them if they exist so they won't be included in the generation!
+rm -f "$OUT_DIR"/all_tokens.txt "$OUT_DIR"/alpha.txt "$OUT_DIR"/freqs.txt  
+
 # Collect all tokens from output directory and store in text file
 cat "$OUT_DIR"/* > "$OUT_DIR"/all_tokens.txt
 
