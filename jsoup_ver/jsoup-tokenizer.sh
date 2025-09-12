@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+# Authors: Alain Delgado, Micah McCollum
 set -euo pipefail
 
 # Verify if there are two arguments Input_directory and Output_directory
@@ -25,7 +27,7 @@ javac -cp jsoup-1.21.2.jar Tokenizer.java
 
 ##### Generate the 3 required files: tokenized output directory, alpha.txt, and freqs.txt #####
 
-MAX_FILES=100
+MAX_FILES=1500
 IN_FILES=( "$IN_DIR"/*.html )
 
 # Loop through .html files up to MAX_FILES or until none are remaining
