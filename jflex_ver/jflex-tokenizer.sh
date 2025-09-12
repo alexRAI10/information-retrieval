@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Begin timing
 start=$(date +%s%N)
 
 # Verify if there are two arguments Input_directory and Output_directory
@@ -13,7 +14,7 @@ fi
 IN_DIR="$1"
 OUT_DIR="$2"
 
-#Error check in case no input directory was found
+# Error check in case no input directory was found
 if [[ ! -d "$IN_DIR" ]]; then
   echo "Error: Input_directory not found: $IN_DIR" >&2
   exit 1
@@ -50,7 +51,7 @@ sort "$OUT_DIR"/all_tokens.txt | uniq -c > "$OUT_DIR"/alpha.txt
 # Sort by frequency first and generate freqs.txt
 sort -k1,1nr -k2,2 "$OUT_DIR"/alpha.txt > "$OUT_DIR"/freqs.txt
 
-# Calculates the time elapsed during script
+# Calculate the time elapsed during script
 end=$(date +%s%N)
 elapsed=$((end - start))
 microsec=$((elapsed / 1000))

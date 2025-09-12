@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Begin timing
+start=$(date +%s%N)
+
 # Verify if there are two arguments Input_directory and Output_directory
 if [[ $# -ne 2 ]]; then
   echo "Args should be: $0 Input_directory Output_directory" >&2
@@ -48,5 +51,12 @@ sort "$OUT_DIR"/all_tokens.txt | uniq -c > "$OUT_DIR"/alpha.txt
 
 # Sort by frequency first and generate freqs.txt
 sort -k1,1nr -k2,2 "$OUT_DIR"/alpha.txt > "$OUT_DIR"/freqs.txt
+
+# Calculate the time elapsed during script
+end=$(date +%s%N)
+elapsed=$((end - start))
+microsec=$((elapsed / 1000))
+millisec=$((microsec / 1000))
+sec=$((millisec / 1000))
 
 echo "Script done!"
