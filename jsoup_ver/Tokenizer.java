@@ -21,7 +21,7 @@ public class Tokenizer {
         System.out.println("\n -> Program running... \n");
         long startTime = System.nanoTime();
 
-        //Setting the read/write files
+        // Setting the read/write files
         String inFilename, outFilename;
         BufferedWriter dout = null;
 
@@ -38,7 +38,7 @@ public class Tokenizer {
                 inFilename += ".html";
             }
 
-            //Added the .txt extension in case no .txt extension was added as args
+            // Added the .txt extension in case no .txt extension was added as args
             if (!outFilename.endsWith(".txt")) {
                 outFilename += ".txt";
             }
@@ -92,7 +92,7 @@ public class Tokenizer {
                 System.err.println("Could not open output file: " + outFilename);
             }
         }    
-        //Calculates the time in microseconds
+        // Calculates the time in microseconds
         long endTime = System.nanoTime();
         long executionTime = (endTime - startTime) / 1000000;
         System.out.println("\n -> Execution time: " + executionTime + "ms");
