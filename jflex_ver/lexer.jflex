@@ -60,28 +60,34 @@ INT         = {SIGN}?{DIGIT}+
 {LETTER}({LETTER}|{DIGIT})*    { return yytext().toLowerCase(Locale.ROOT); }   /* identifiers (added toLowerCase to lowcase tokens)*/
 {WS}                           {  }                   /* skip whitespace */
 "&" [A-Za-z0-9#]+ ";"          {  }                   /* skip HTML entities */
-.                              {  }                   /* skip punctuation/other chars */
+<YYINITIAL> {ANY}              { /* skip one char */ }
 
-/* keeping href URLs */
+/* keeping href URLs: only keep absolute http/https; skip others */
 
 <TAG> "href" {WS}* "=" {WS}* "\""   { yybegin(HREF_DQ); }
 <TAG> "href" {WS}* "=" {WS}* "'"    { yybegin(HREF_SQ); }
 <TAG> "href" {WS}* "=" {WS}*        { yybegin(HREF_UQ); }
 
 /* double-quoted value */
-<HREF_DQ> {SCHEME} [^\"]+            { return yytext().replace("&amp;", "&"); }  
-<HREF_DQ> [^\"]+                     { /* skip non-http(s) values (mailto:/relative/etc.) */ }
-<HREF_DQ> "\""                      { yybegin(TAG); }
+<HREF_DQ> {SCHEME} [^\"]+             { return yytext().replace("&amp;","&"); }
+<HREF_DQ> [^\"]+                      { /* skip non-http(s) */ }
+<HREF_DQ> "\""                       { yybegin(TAG); }
+<HREF_DQ> <<EOF>>                    { yybegin(YYINITIAL); return null; }   // prevent jam at EOF
+<HREF_DQ> {ANY}                      {  }
 
-/* single-quoted value */
-<HREF_SQ> {SCHEME} [^']+            { return yytext().replace("&amp;", "&"); }
-<HREF_SQ> [^']+                     { /* skip */ }
-<HREF_SQ> "'"                       { yybegin(TAG); }
+/* single-quoted */
+<HREF_SQ> {SCHEME} [^']+             { return yytext().replace("&amp;","&"); }
+<HREF_SQ> [^']+                      {  }
+<HREF_SQ> "'"                        { yybegin(TAG); }
+<HREF_SQ> <<EOF>>                    { yybegin(YYINITIAL); return null; }
+<HREF_SQ> {ANY}                      {  }
 
-/* unquoted value ends on space or '>' */
-<HREF_UQ> {SCHEME} [^ \t\f\r\n\"'>]+ { return yytext().replace("&amp;", "&"); }
-<HREF_UQ> [^ \t\f\r\n\"'>]+         { /* skip */ }
-<HREF_UQ> [ \t\f\r\n>]+             { yybegin(TAG); }
+/* unquoted (ends on ws or '>') */
+<HREF_UQ> {SCHEME} [^ \t\f\r\n\"'>]+ { return yytext().replace("&amp;","&"); }
+<HREF_UQ> [^ \t\f\r\n\"'>]+          {  }
+<HREF_UQ> [ \t\f\r\n>]+              { yybegin(TAG); }
+<HREF_UQ> <<EOF>>                    { yybegin(YYINITIAL); return null; }
+<HREF_UQ> {ANY}                      {  }
 
 /* HTML elements */
 <TAG> ">"                      { yybegin(YYINITIAL); }
