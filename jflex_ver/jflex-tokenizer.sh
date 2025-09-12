@@ -54,6 +54,8 @@ sort -k1,1nr -k2,2 "$OUT_DIR"/alpha.txt > "$OUT_DIR"/freqs.txt
 end=$(date +%s%N)
 elapsed=$((end - start))
 microsec=$((elapsed / 1000))
+millisec=$((microsec / 1000))
+sec=$((millisec / 1000))
 
 echo "Script done!"
-echo "Total execution time: ${microsec}ms"
+echo "Total execution time: ${sec}sec"
