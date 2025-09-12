@@ -12,12 +12,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.lang.String;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Tokenizer {
     public static void main(String[] args) {
         // Timer set to measure execution
-        // System.out.println("\n -> Program running... \n");
-        // long startTime = System.nanoTime();
+        System.out.println("\n -> Program running... \n");
+        long startTime = System.nanoTime();
 
         //Setting the read/write files
         String inFilename, outFilename;
@@ -57,27 +59,30 @@ public class Tokenizer {
                 Document doc = Jsoup.parse(html, "UTF-8");
                 String textContent = doc.text();
 
-                // Retain URLs after href attributes
+                // Retain URLs following href attribute and then include href URL as token by appending to anchor text
                 Elements hrefLinks = doc.select("a[href]");
-
-                // Rewrite <a> text with appended href URL
                 for (Element link : hrefLinks) {
                     link.text(link.text() + " " + link.attr("href"));
                 }
-                textContent = doc.text(); // Update text since <a> text has the href URL appended to be tokenized
+                textContent = doc.text(); // Update text
 
-                // Split and tokenize by whitespace
-                String[] tokens = textContent.split("(?<!\\d)\\W+|\\W+(?!\\d)");
+                // Match rules
+                String regexPattern =
+                    "([a-zA-Z0-9._]+@[a-zA-Z0-9.]+\\.[a-zA-Z]{2,})" + // Emails (like johnsmith@gmail.com)
+                    "|(https?://[^\\s\"]+|www\\.[^\\s\"]+)" + // URLs (like uark.edu)
+                    "|([a-zA-Z0-9_-]+(?:/[a-zA-Z0-9._-]+)+)" + // Paths (like notes/index.html)
+                    "|(\\d+\\.\\d+)" + // Floating point numbers (like 4.3)
+                    "|(\\d+)" + // Integers
+                    "|([A-Za-z]+)"; // Regular characters
 
-                for (String token : tokens) {
-                    if (!token.isEmpty()) {
-
-                        // Downcase tokens
-                        token = token.toLowerCase();
-
-                        dout.write(token);
-                        dout.newLine();
-                    }
+                // Regex pattern matching for tokenization
+                Pattern pattern = Pattern.compile(regexPattern);
+                Matcher matcher = pattern.matcher(textContent);
+                while (matcher.find()) {
+                    String token = matcher.group(); // Tokens that match the patterns
+                    token = token.toLowerCase(); // Downcase final token before writing to file
+                    dout.write(token);
+                    dout.newLine();
                 }
 
                 // Close file writer
@@ -88,8 +93,8 @@ public class Tokenizer {
             }
         }    
         //Calculates the time in microseconds
-        // long endTime = System.nanoTime();
-        // long executionTime = (endTime - startTime) / 1000000;
-        // System.out.println("\n -> Execution time: " + executionTime + "ms");
+        long endTime = System.nanoTime();
+        long executionTime = (endTime - startTime) / 1000000;
+        System.out.println("\n -> Execution time: " + executionTime + "ms");
     }
 }

@@ -1,7 +1,11 @@
 smalloutput/
+smalloutput2/
 smallfiles/
+webpages/
+webout/
 typescript
 Lexer.java
+Tokenizer-copy.java
 
 # Compiled class file
 *.class
