@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Begin timing
-start=$(date +%s%N)
-
 # Verify if there are two arguments Input_directory and Output_directory
 if [[ $# -ne 2 ]]; then
   echo "Args should be: $0 Input_directory Output_directory" >&2
@@ -28,9 +25,13 @@ javac -cp jsoup-1.21.2.jar Tokenizer.java
 
 ##### Generate the 3 required files: tokenized output directory, alpha.txt, and freqs.txt #####
 
-# Loop through .html files
-find "$IN_DIR" -type f -name '*.html' -print0 | while IFS= read -r -d '' FILE; do
-  
+MAX_FILES=100
+IN_FILES=( "$IN_DIR"/*.html )
+
+# Loop through .html files up to MAX_FILES or until none are remaining
+for ((i=0; i<MAX_FILES && i<${#IN_FILES[@]}; i++)); do
+
+  FILE="${IN_FILES[i]}"
   BASENAME="$(basename "$FILE" .html)"
   OUTFILE="$OUT_DIR/$BASENAME.txt"
 
@@ -51,12 +52,5 @@ sort "$OUT_DIR"/all_tokens.txt | uniq -c > "$OUT_DIR"/alpha.txt
 
 # Sort by frequency first and generate freqs.txt
 sort -k1,1nr -k2,2 "$OUT_DIR"/alpha.txt > "$OUT_DIR"/freqs.txt
-
-# Calculate the time elapsed during script
-end=$(date +%s%N)
-elapsed=$((end - start))
-microsec=$((elapsed / 1000))
-millisec=$((microsec / 1000))
-sec=$((millisec / 1000))
 
 echo "Script done!"
